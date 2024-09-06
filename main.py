@@ -1,4 +1,5 @@
-import pygame, constants, player
+import pygame, constants
+from player import Player
 
 def main():
     pygame.init()
@@ -9,8 +10,16 @@ def main():
     clock = pygame.time.Clock()
     dt = 0
     screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
-    
-    player_obj = player.Player(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT / 2, constants.PLAYER_RADIUS)
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+
+    Player.containers = [updatable, drawable]
+
+    player_obj = Player(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT / 2, constants.PLAYER_RADIUS)
+    updatable.add(player_obj)
+    drawable.add(player_obj)
+
     
     while True:
         for event in pygame.event.get():
@@ -19,9 +28,11 @@ def main():
         
         screen.fill((0, 0, 0))
         
-        player_obj.update(dt)
-        
-        player_obj.draw(screen)
+        for sprite in drawable:
+            sprite.draw(screen)
+
+        for item in updatable:
+            item.update(dt)          
         
         pygame.display.flip()
         

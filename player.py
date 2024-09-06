@@ -1,7 +1,6 @@
 import pygame, constants
 from circleshape import CircleShape
 
-
 class Player(CircleShape):
     def __init__(self, x, y, radius):
         super().__init__(x, y, radius)
@@ -15,12 +14,17 @@ class Player(CircleShape):
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
         return [a, b, c]
+    
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), 2)
 
     def rotate(self, dt):
         self.rotation += constants.PLAYER_TURN_SPEED * dt
         self.rotation %= 360
+
+    def move(self, dt):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.position += forward * constants.PLAYER_SPEED * dt
 
     def update(self, dt):
         keys = pygame.key.get_pressed()
@@ -29,3 +33,12 @@ class Player(CircleShape):
             self.rotate(dt)
         if keys[pygame.K_d]:
             self.rotate(-dt)
+        if keys[pygame.K_w]:
+            self.move(dt)
+        if keys[pygame.K_s]:
+            self.move(-dt)
+    
+    
+    # this isn't really the best way to handle this since we need to manually add the groups to the container on main.py
+    # but since there's only one player object, it should be fine.
+    containers = []

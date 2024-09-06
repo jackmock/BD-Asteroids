@@ -18,7 +18,9 @@ def main():
                 return
         
         screen.fill((0, 0, 0))
-
+        
+        player_obj.update(dt)
+        
         player_obj.draw(screen)
         
         pygame.display.flip()

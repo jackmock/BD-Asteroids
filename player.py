@@ -1,7 +1,11 @@
 import pygame, constants
 from circleshape import CircleShape
+from shot import Shot
 
 class Player(CircleShape):
+    
+    containers = []
+    
     def __init__(self, x, y, radius):
         super().__init__(x, y, radius)
         self.rotation = 0
@@ -26,19 +30,21 @@ class Player(CircleShape):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * constants.PLAYER_SPEED * dt
 
+    def shoot(self):
+        velocity = pygame.Vector2(0, 1).rotate(self.rotation) * constants.PLAYER_SHOOT_SPEED
+        Shot(self.position, velocity)
+
     def update(self, dt):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
-            self.rotate(dt)
-        if keys[pygame.K_d]:
             self.rotate(-dt)
+        if keys[pygame.K_d]:
+            self.rotate(dt)
         if keys[pygame.K_w]:
             self.move(dt)
         if keys[pygame.K_s]:
             self.move(-dt)
+        if keys[pygame.K_SPACE]:
+            self.shoot()
     
-    
-    # this isn't really the best way to handle this since we need to manually add the groups to the container on main.py
-    # but since there's only one player object, it should be fine.
-    containers = []
